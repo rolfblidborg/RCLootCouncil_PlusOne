@@ -1,6 +1,6 @@
-## Interface: 30400
+## Interface: 40401
 ## Title: RCLootCouncil - PlusOne
-## Version: 0.1.0-wotlk
+## Version: 0.2.0-Cata
 ## Author: Bagstone
 ## Notes: An extension to RCLC that adds +1 counters for MS/OS +1 raids
 ## Dependencies: RCLootCouncil_Classic

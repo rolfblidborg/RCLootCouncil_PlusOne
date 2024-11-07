@@ -6,7 +6,7 @@ local session = 1
 local table = table
 
 function RCVFP:OnInitialize()
-	if not RCVotingFrame.scrollCols then -- RCVotingFrame hasn't been initialized.
+	if not RCVotingFrame.scrollCols then
 		return self:ScheduleTimer("OnInitialize", 0.5)
 	end
     self:UpdateColumns()
@@ -29,13 +29,21 @@ function RCVFP:UpdateColumns()
     local plusoneos =
     { name = "+OS", DoCellUpdate = self.SetCellPlusoneOS, colName = "OS", sortnext = self:GetScrollColIndexFromName("MS"), width = 30, align = "CENTER", defaultsort = "asc" }
 	table.insert(RCVotingFrame.scrollCols, plusoneos)
-	
-	table.remove(RCVotingFrame.scrollCols, self:GetScrollColIndexFromName("votes"))
-	table.remove(RCVotingFrame.scrollCols, self:GetScrollColIndexFromName("vote"))
+
+    -- Check if the columns "votes" and "vote" exist before trying to remove them
+	local votesIdx = self:GetScrollColIndexFromName("votes")
+	if votesIdx then
+		table.remove(RCVotingFrame.scrollCols, votesIdx)
+	end
+	local voteIdx = self:GetScrollColIndexFromName("vote")
+	if voteIdx then
+		table.remove(RCVotingFrame.scrollCols, voteIdx)
+	end
 
     self:ResponseSortNext()
 
-    if RCVotingFrame:GetFrame() then
+    -- Verify that UpdateSt() is valid in Cataclysm; replace if necessary
+    if RCVotingFrame:GetFrame() and RCVotingFrame:GetFrame().UpdateSt then
         RCVotingFrame:GetFrame().UpdateSt()
     end
 end
@@ -53,13 +61,12 @@ function RCVFP.SetCellPlusoneMS(rowFrame, frame, data, cols, row, realrow, colum
 	local lootTable = RCVotingFrame:GetLootTable()
 	local countLoot = 0
 	for nameLootReceiver, a in pairs(RCLootCouncil.lootDB.factionrealm) do
-		if nameLootReceiver==name then
-			for i,v in ipairs(a) do
-				if v.date==date("%d/%m/%y") then
-					testVar = v
+		if nameLootReceiver == name then
+			for i, v in ipairs(a) do
+				if v.date == date("%d/%m/%y") then
 					for k, t in pairs(v) do
-						if k=="response" and string.find(string.lower(t), "ms") then
-							countLoot=countLoot+1
+						if k == "response" and string.find(string.lower(t), "ms") then
+							countLoot = countLoot + 1
 						end
 					end
 				end
@@ -76,13 +83,12 @@ function RCVFP.SetCellPlusoneOS(rowFrame, frame, data, cols, row, realrow, colum
 	local lootTable = RCVotingFrame:GetLootTable()
 	local countLoot = 0
 	for nameLootReceiver, a in pairs(RCLootCouncil.lootDB.factionrealm) do
-		if nameLootReceiver==name then
-			for i,v in ipairs(a) do
-				if v.date==date("%d/%m/%y") then
-					testVar = v
+		if nameLootReceiver == name then
+			for i, v in ipairs(a) do
+				if v.date == date("%d/%m/%y") then
 					for k, t in pairs(v) do
-						if k=="response" and string.find(string.lower(t), "os") then
-							countLoot=countLoot+1
+						if k == "response" and string.find(string.lower(t), "os") then
+							countLoot = countLoot + 1
 						end
 					end
 				end
